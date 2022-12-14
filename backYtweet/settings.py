@@ -40,10 +40,14 @@ INSTALLED_APPS = [
     #REST
     'rest_framework',
     #appli
-    'posts.apps.PostsConfig',
+   # 'posts.apps.PostsConfig',
+    'logins.apps.LoginsConfig',
+    'users.apps.UsersConfig',
+
     # CORS
     'corsheaders',
 ]
+
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('http://localhost:8081',)
@@ -56,10 +60,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
      # CORS
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',   
    
+]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.RemoteUserBackend',
 ]
 
 ROOT_URLCONF = 'backYtweet.urls'
