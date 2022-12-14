@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Posts(models.Model):
+class Post(models.Model):
     #Pas de titre
     #title = models.CharField(max_length=70, blank=False, default='')
     #twitte :
@@ -9,5 +9,7 @@ class Posts(models.Model):
     userId = models.IntegerField(blank=True, null=True) 
     publishDate = models.DateTimeField(auto_now=True)
     pathMedia = models.CharField(max_length=200,blank=False, default='')
-
-    #published = models.BooleanField(default=False)
+    published = models.BooleanField(default=True)
+    #media
+    #document = models.FileField(upload_to='document/')
+    #uploaded_at = models.DateTimeField(auto_now_add=True)
