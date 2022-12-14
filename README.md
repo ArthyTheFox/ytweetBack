@@ -1,2 +1,2 @@
 # ytweetBack
-ytweet for back-end
+back-end for ytweet
