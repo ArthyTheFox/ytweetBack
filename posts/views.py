@@ -8,6 +8,9 @@ from posts.models import Post
 from posts.serializers import PostsSerializer
 from rest_framework.decorators import api_view
 
+from django.core.files.storage import FileSystemStorage
+
+
 
 @api_view(['GET', 'POST', 'DELETE'])
 def post_list(request):
@@ -24,20 +27,40 @@ def post_list(request):
         return JsonResponse(posts_serializer.data, safe=False)
         #Create and Save a new Tutorial:
         # 'safe=False' for objects serialization
+    
     elif request.method == 'POST':
-         
-        #recupere le fichier
-        myFile = request.FILE["pathMedia"]
-        print(myFile.name) 
+        post = PostsSerializer(request.POST, request.IMAGES)
+        if post.is_valid():
+            post.save()
+            print('OK')
+            return JsonResponse(post.data, status=status.HTTP_201_CREATED) 
+        print('NOK')
+        return JsonResponse(post.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # enregistre image 
+        # post = PostsSerializer(request.POST, request.FILES)
+        # posts_data = JSONParser().parse(request)
+        # print(posts_data)
+        
+        # posts_serializer = PostsSerializer(data=posts_data)
+        # if posts_serializer.is_valid:
+        #     posts_serializer.save
+        #     return JsonResponse(posts_serializer.data, status=status.HTTP_201_CREATED) 
+        # return JsonResponse(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        #envoie les parametres vers la base de donnees
-        posts_data = JSONParser().parse(request)
-        posts_serializer = PostsSerializer(data=posts_data)
-        if posts_serializer.is_valid():
-            posts_serializer.save()
-            return JsonResponse(posts_serializer.data, status=status.HTTP_201_CREATED) 
-        return JsonResponse(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # recupere les informations
+        # envoie les parametres vers la base de donnees 
+        
+        # posts_data = JSONParser().parse(request)
+        # print(posts_data)
+        # posts_serializer = PostsSerializer(data=posts_data)
+        # if posts_serializer.is_valid():
+        #     posts_serializer.save()
+        #     return JsonResponse(posts_serializer.data, status=status.HTTP_201_CREATED) 
+        # return JsonResponse(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
 
+      
 @api_view(['GET', 'DELETE'])
 def post_detail(request, pk):
    # find posts by pk (id)
@@ -55,3 +78,9 @@ def post_detail(request, pk):
     except Post.DoesNotExist: 
         return JsonResponse({'message': 'The post does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
+ 
+#fonctionnelle
+# if request.FILES.get('pathMedia', False):
+#    myFile = request.FILES.get('pathMedia', False)
+#    fs = FileSystemStorage()
+#    fs.save(myFile.name, myFile)
