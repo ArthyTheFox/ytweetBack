@@ -7,20 +7,27 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-    function index() {
-        $posts = Post::all();
+    function index()
+    {
+        $posts = Post::select('posts.*', 'users.username')
+            ->join('users', 'users.id', '=', 'posts.userId')
+            ->orderBy('posts.id', 'desc')
+            ->get();
 
         return $posts;
     }
 
-    function store(Request $request){
+    function store(Request $request)
+    {
         $post = new Post;
 
-        $imageName = time().'.'.$request['pathMedia']->extension();
-        $request['pathMedia']->move(public_path('media'), $imageName);
+        if ($request['pathMedia']) {
+            $imageName = time() . '.' . $request['pathMedia']->extension();
+            $request['pathMedia']->move(public_path('media'), $imageName);
+            $post->pathMedia = $imageName;
+        }
 
         $post->content = $request['content'];
-        $post->pathMedia = $imageName;
         $post->publishDate = date("Y-m-d H:i:s");
         $post->published = 0;
         $post->userId = 1;
@@ -28,5 +35,9 @@ class PostController extends Controller
         $post->save();
 
         return $post;
+    }
+
+    public function show($id)
+    {
     }
 }
