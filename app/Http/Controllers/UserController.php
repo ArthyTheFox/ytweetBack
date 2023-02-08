@@ -7,10 +7,11 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    function index() {
-        $posts = User::all();
-
-        return $posts;
+    function deleteUser(Request $request) {
+        $user = User::find($request['id']);
+        #affiche l'utilisateur trouvé sur la page web
+        $user->delete();
+        return $user;
     }
     function createUser(Request $request){
         $user = new User;
@@ -19,10 +20,28 @@ class UserController extends Controller
         $user->firstname = $request['firstname'];
         $user->email = $request['email'];
         $user->username = $request['username'];
-        #enregistre le mdp chiffré
-        $user->password = bcrypt($request['password']);
-        $user->birthday = $request['birthday'];
- 
+        if ($request['password'] == null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Password need to not be null.',
+            ], 500);
+        } 
+        elseif (strlen($request['password']) < 8) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Password need 8 caractere minimum.',
+            ], 500);        }
+
+        else {
+            $user->password = bcrypt($request['password']);
+        }
+            if ($request['birthday'] == null) {
+            $user->birthday = null;
+        } else {
+            $user->birthday = $request['birthday'];
+        }
+
+
         $user->save();
 
         return $user;
