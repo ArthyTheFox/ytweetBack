@@ -7,7 +7,7 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-    function index()
+    public function index()
     {
         $posts = Post::select('posts.*', 'users.username')
             ->join('users', 'users.id', '=', 'posts.userId')
@@ -17,7 +17,7 @@ class PostController extends Controller
         return $posts;
     }
 
-    function store(Request $request)
+    public function store(Request $request)
     {
         $post = new Post;
 
@@ -38,7 +38,19 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::find($id);
+        $post = Post::select('posts.*', 'users.username')
+        ->join('users', 'users.id', '=', 'posts.userId')
+        ->where('posts.id', $id)
+        ->first();
         return $post;
+    }
+
+    public function showByUser($id)
+    {
+        $posts = Post::select('posts.*', 'users.username')
+            ->join('users', 'users.id', '=', 'posts.userId')
+            ->where('userId', $id)
+            ->get();
+        return $posts;
     }
 }
