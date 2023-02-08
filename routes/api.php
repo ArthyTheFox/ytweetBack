@@ -4,6 +4,8 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +29,8 @@ Route::get('/post/user/{id}', [PostController::class, 'showByUser']);
 //route comment
 Route::post('/comment', [CommentController::class, 'newComment']);
 Route::get('/comment/post/{id}', [CommentController::class, 'showByPost']);
+
+Route::post('/deleteUser', [UserController::class, 'deleteUser']);
+Route::post('/createUser', [UserController::class, 'createUser']);
+Route::post('/login', [LoginController::class, 'loginUser']);
 
