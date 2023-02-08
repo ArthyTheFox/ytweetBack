@@ -21,17 +21,16 @@ class PostController extends Controller
     {
         $post = new Post;
 
-        if ($request['pathMedia']) {
+        if ($request['pathMedia']) 
+        {
             $imageName = time() . '.' . $request['pathMedia']->extension();
             $request['pathMedia']->move(public_path('media'), $imageName);
             $post->pathMedia = $imageName;
         }
-
         $post->content = $request['content'];
         $post->publishDate = date("Y-m-d H:i:s");
-        $post->published = 0;
-        $post->userId = 1;
-
+        $post->published = $request['published'];
+        $post->userId = $request['userId'];
         $post->save();
         return $post;
     }
