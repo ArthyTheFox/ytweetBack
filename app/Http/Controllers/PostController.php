@@ -33,7 +33,6 @@ class PostController extends Controller
         $post->userId = 1;
 
         $post->save();
-
         return $post;
     }
 
