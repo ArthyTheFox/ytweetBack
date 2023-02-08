@@ -12,8 +12,7 @@ class CommentController extends Controller
        $comment = new Comment;
        $comment->idComment = $request['idComment'];
        $comment->idPost = $request['idPost'];
-       $comment->idUser = $request['idUser'];
-       $comment->publishDate = $request['publishDate'];
+       $comment->idUser = $request['idUser']; 
        $comment->content = $request['content'];
        $comment->publishDate = date("Y-m-d H:i:s");
        $comment->save();
@@ -22,12 +21,20 @@ class CommentController extends Controller
 
     public function showByPost($id)
     {
-        
         $comment = Comment::select('comments.*', 'users.username')
         ->join('users', 'users.id', '=', 'comments.idUser')
         ->where('idPost', $id)
         ->orderBy('comments.id', 'desc')
         ->get();
-        return $comment;
+        if($comment!=null)
+        {
+            return response()->json($comment, 200);
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Error receved comment',
+            ], 401);
+        }
     }
 }
