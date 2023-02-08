@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -16,6 +17,10 @@ class CommentController extends Controller
        $comment->content = $request['content'];
        $comment->publishDate = date("Y-m-d H:i:s");
        $comment->save();
+
+       $user = User::select('username')->where('id', $comment->idUser)->first();
+         
+       $comment->username = $user->username;
        return $comment;
     }
 
