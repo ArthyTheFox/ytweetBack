@@ -17,14 +17,12 @@ class CommentController extends Controller
        $comment->content = $request['content'];
        $comment->publishDate = date("Y-m-d H:i:s");
        $comment->save();
-
        $user = User::select('username')->where('id', $comment->idUser)->first();
-         
        $comment->username = $user->username;
        return $comment;
     }
 
-    public function showByPost($id)
+    public function showByIdPost($id)
     {
         $comment = Comment::select('comments.*', 'users.username')
         ->join('users', 'users.id', '=', 'comments.idUser')
@@ -41,5 +39,6 @@ class CommentController extends Controller
                 'message' => 'Error receved comment',
             ], 401);
         }
-    }
+    } 
+
 }

@@ -44,7 +44,7 @@ class PostController extends Controller
         return $post;
     }
 
-    public function showByUser($id)
+    public function showByIdUser($id)
     {
         $posts = Post::select('posts.*', 'users.username')
             ->join('users', 'users.id', '=', 'posts.userId')
