@@ -19,21 +19,37 @@ class CommentController extends Controller
        $comment->save();
        $user = User::select('username')->where('id', $comment->idUser)->first();
        $comment->username = $user->username;
+       $comment->firstname = $user->firstname;
+       $comment->lastname = $user->lastname;
+       $comment->subComment = null;
        return $comment;
     }
 
     public function showByIdPost($id)
     {
-        $comment = Comment::select('comments.*', 'users.username' )
+        $comment = Comment::select('comments.*', 'users.username', 'users.firstname', 'users.lastname' )
         ->join('users', 'users.id', '=', 'comments.idUser')
         ->where('idPost', $id)
+        ->whereNull('comments.idComment')
         ->orderBy('comments.id', 'desc')
         ->get();
-
         
-        
-        if($comment!=null)
+        foreach ($comment as $myComment) 
         {
+            $subComment = Comment::select('comments.*', 'users.username','users.firstname', 'users.lastname')
+            ->join('users', 'users.id', '=', 'comments.idUser')
+            ->where('comments.idComment', $myComment->id) 
+            ->orderBy('comments.id', 'desc')
+            ->get(); 
+            if($subComment) 
+            {
+                $myComment->subComment = $subComment;                
+            } else {
+                $myComment->subComment = null;
+            }
+        }
+        if($comment)
+        {   
             return response()->json($comment, 200);
         }
         else
