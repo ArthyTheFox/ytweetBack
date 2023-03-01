@@ -19,9 +19,7 @@ class LikeController extends Controller
 
     public function deleteLike($id)
     {
-        $like = Like::find($id);
-        #affiche l'utilisateur trouvé sur la page web
-        $like->delete();
+        $like = Like::find($id)->delete();
         return $like;
     } 
 }
