@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password'=> 'required',
         'firstname'=> 'required',
         'lastname'=> 'required',
-        'birthday' => 'nullable|date',
+        'birthday' => 'date',
     ];
 
     /**

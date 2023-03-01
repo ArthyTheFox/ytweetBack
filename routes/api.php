@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,6 @@ Route::post('/deleteUser', [UserController::class, 'deleteUser']);
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 
+Route::post('/sendMessages', [MessageController::class, 'createMessage']);
+Route::get('/getMessages', [MessageController::class, 'getAllMessage']);
+Route::post('/deleteMessages', [MessageController::class, 'deleteMessage']);
