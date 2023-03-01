@@ -36,5 +36,5 @@ Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 //route like
 Route::post('/newLike', [LikeController::class, 'newLike']); 
-Route::post('/deleteLike', [LikeController::class, 'deleteLike']);
+Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 
