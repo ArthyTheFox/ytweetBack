@@ -24,11 +24,14 @@ class CommentController extends Controller
 
     public function showByIdPost($id)
     {
-        $comment = Comment::select('comments.*', 'users.username')
+        $comment = Comment::select('comments.*', 'users.username' )
         ->join('users', 'users.id', '=', 'comments.idUser')
         ->where('idPost', $id)
         ->orderBy('comments.id', 'desc')
         ->get();
+
+        
+        
         if($comment!=null)
         {
             return response()->json($comment, 200);

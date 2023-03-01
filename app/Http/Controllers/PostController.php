@@ -9,7 +9,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::select('posts.*', 'users.username')
+        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
             ->join('users', 'users.id', '=', 'posts.userId')
             ->orderBy('posts.id', 'desc')
             ->get();
@@ -37,7 +37,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::select('posts.*', 'users.username')
+        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
         ->join('users', 'users.id', '=', 'posts.userId')
         ->where('posts.id', $id)
         ->first();
