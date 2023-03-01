@@ -29,5 +29,5 @@ Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
-Route::get('/getMessages', [MessageController::class, 'getAllMessage']);
+Route::post('/getMessages', [MessageController::class, 'getAllMessage']);
 Route::post('/deleteMessages', [MessageController::class, 'deleteMessage']);
