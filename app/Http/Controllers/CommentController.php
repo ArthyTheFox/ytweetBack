@@ -17,11 +17,11 @@ class CommentController extends Controller
        $comment->content = $request['content'];
        $comment->publishDate = date("Y-m-d H:i:s");
        $comment->save();
-       $user = User::select('username')->where('id', $comment->idUser)->first();
+       $user = User::select('username', 'lastname','firstname')->where('id', $comment->idUser)->first();
        $comment->username = $user->username;
        $comment->firstname = $user->firstname;
        $comment->lastname = $user->lastname;
-       $comment->subComment = null;
+       $comment->subComment = [];
        return $comment;
     }
 
@@ -45,7 +45,7 @@ class CommentController extends Controller
             {
                 $myComment->subComment = $subComment;                
             } else {
-                $myComment->subComment = null;
+                $myComment->subComment = [];
             }
         }
         if($comment)
