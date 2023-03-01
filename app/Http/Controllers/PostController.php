@@ -7,8 +7,10 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // $request->query('idUserConnected');
+
         $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
             ->join('users', 'users.id', '=', 'posts.userId')
             ->orderBy('posts.id', 'desc')
