@@ -27,10 +27,24 @@ class CommentController extends Controller
         $comment = Comment::select('comments.*', 'users.username')
         ->join('users', 'users.id', '=', 'comments.idUser')
         ->where('idPost', $id)
+        ->whereNull('comments.idComment')
         ->orderBy('comments.id', 'desc')
         ->get();
-        if($comment!=null)
+        
+        foreach ($comment as $myComment) 
         {
+            $subComment = Comment::select('comments.*', 'users.username')
+            ->join('users', 'users.id', '=', 'comments.idUser')
+            ->where('comments.idComment', $myComment->id) 
+            ->orderBy('comments.id', 'desc')
+            ->get(); 
+            if($subComment) 
+            {
+                $myComment->subComment = $subComment;                
+            }
+        }
+        if($comment)
+        {   
             return response()->json($comment, 200);
         }
         else
