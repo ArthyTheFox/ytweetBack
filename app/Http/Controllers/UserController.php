@@ -13,6 +13,7 @@ class UserController extends Controller
         $user->delete();
         return $user;
     }
+    
     function createUser(Request $request){
         $user = new User;
 

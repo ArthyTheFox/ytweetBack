@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -33,4 +34,7 @@ Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
 Route::post('/deleteUser', [UserController::class, 'deleteUser']);
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
+//route like
+Route::post('/newLike', [LikeController::class, 'newLike']); 
+Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 
