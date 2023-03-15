@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // $request->query('idUserConnected');
-
         $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
             ->join('users', 'users.id', '=', 'posts.userId')
+            ->where('isArchived', false)
             ->orderBy('posts.id', 'desc')
             ->get();
 
@@ -39,17 +39,27 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
+        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike')
         ->join('users', 'users.id', '=', 'posts.userId')
+        ->leftJoinSub(
+            Like::selectRaw('idPost, COUNT(*) as nbreLike')
+                ->groupBy('idPost'),
+            'likes',
+            'likes.idPost',
+            '=',
+            'posts.id'
+        )
+        ->where('isArchived', false)
         ->where('posts.id', $id)
         ->first();
-        return $post;
+            return $post; 
     }
 
     public function showByIdUser($id)
     {
         $posts = Post::select('posts.*', 'users.username')
             ->join('users', 'users.id', '=', 'posts.userId')
+            ->where('isArchived', false)
             ->where('userId', $id)
             ->get();
         return $posts;
