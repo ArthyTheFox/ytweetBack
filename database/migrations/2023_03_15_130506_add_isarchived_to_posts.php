@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('likes', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger("idUser");
-            $table->bigInteger("idComment")->nullable();
-            $table->bigInteger("idPost")->nullable(); 
-            $table->timestamps();
+        Schema::table('posts', function (Blueprint $table) 
+        {
+            $table->boolean('isArchived')->default(0);        
         });
     }
 
@@ -29,6 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('likes');
+        Schema::table('posts', function (Blueprint $table) {
+            //
+        });
     }
 };

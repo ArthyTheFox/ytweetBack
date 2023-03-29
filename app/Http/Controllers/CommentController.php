@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Like;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -27,13 +28,12 @@ class CommentController extends Controller
 
     public function showByIdPost($id)
     {
-        $comment = Comment::select('comments.*', 'users.username', 'users.firstname', 'users.lastname' )
+        $comment = Comment::select('comments.*', 'users.username', 'users.firstname', 'users.lastname') 
         ->join('users', 'users.id', '=', 'comments.idUser')
         ->where('idPost', $id)
         ->whereNull('comments.idComment')
         ->orderBy('comments.id', 'desc')
         ->get();
-        
         foreach ($comment as $myComment) 
         {
             $subComment = Comment::select('comments.*', 'users.username','users.firstname', 'users.lastname')
@@ -44,7 +44,8 @@ class CommentController extends Controller
             if($subComment) 
             {
                 $myComment->subComment = $subComment;                
-            } else {
+            } else 
+            {
                 $myComment->subComment = [];
             }
         }
