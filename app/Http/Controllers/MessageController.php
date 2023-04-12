@@ -4,54 +4,108 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Message;
+use Psy\Readline\Hoa\Console;
+use App\Models\Conversation;
+use App\Models\User;
+use App\Models\userconversation;
+use Illuminate\Support\Str;
 
 
 class MessageController extends Controller
 {
-    function createMessage(Request $request){
+    function createMessage(Request $request)
+    {   //pour cette route il faut en paramètre userSend, userReciev, content, pathMediaMessage
+        $convSend =  UserConversation::where('id_User', $request['userSend'])->pluck('id_conversation')->toArray();
+        $convReciev = userconversation::where('id_User', $request['userReceive'])->pluck('id_conversation')->toArray();
+        $convexist = array_intersect($convSend, $convReciev);
+        $id_conv = $convexist[0];
         $message = new Message;
-
         $message->userSend = $request['userSend'];
-        $message->userReceive = $request['userReceive'];
         $message->content = $request['content'];
-        
+        $message->id_conversation = $id_conv;
+        $message->publishDate = now();
 
-        #la publishDate est égale à la date du jour avec l'heure
-        $message->publishDate = date("Y-m-d H:i:s");
         if ($request['pathMediaMessage'] == null) {
             $message->pathMediaMessage = null;
         } else {
             $message->pathMediaMessage = $request['pathMediaMessage'];
         }
-        if ($request['reponseMessage'] == null) {
-            $message->reponseMessage = null;
+        $message->save();
+    }
+    function createConversation(Request $request){//pour cette route il faut en paramètre userSend, userReciev, titre
+        $convSend =  userconversation::where('id_User', $request['userSend'])->pluck('id_conversation')->toArray();
+        $convReciev = userconversation::where('id_User', $request['userReceive'])->pluck('id_conversation')->toArray();
+        //vérifie s'ils ont un élément en commun
+        $convexist = array_intersect($convSend, $convReciev);
+
+        // si convexist a une taille supérieur à 0 alors on fait
+        if (sizeof($convexist) == 0){
+            $newConv = new Conversation();
+            $newConv->titre = "Conversation de " . $request['titre'];
+            //id de la conversation est égale à l'id de la dernière conversation +1
+           /* $max = Conversation::orderBy('id_conversation', 'ASC')->first();
+            if ($max == null) {
+                $newConv->id_conversation = 1;
+            } else {
+                $newConv->id_conversation = $max + 1;
+            }
+            print_r($max + 1);*/
+            $id_conv=random_int(1, 1000000000);
+            $newConv->id_conversation=$id_conv;
+            $newConv->save();
+            
+            $newUserConv = new userconversation();
+            $newUserConv->id_User = $request['userSend'];
+            $newUserConv->id_conversation = $id_conv;
+            $newUserConv->save();
+            $newUserConv = new userconversation();
+            $newUserConv->id_User = $request['userReceive'];
+            $newUserConv->id_conversation = $id_conv;
+            $newUserConv->save();
+            return response()->json([
+                "message" => "La conversation a été créée",
+                "id_conversation" => $id_conv
+            ], 200);
         } else {
-            $message->reponseMessage = $request['reponseMessage'];
+            $id_conv = $convexist;
+            return response()->json([
+                "message" => "La conversation existe déjà",
+                "id_conversation" => $id_conv[0]
+            ], 200);
         }
         
-        $message->view = false;
-
-        $message->save();
-
-        #retour le message
-        return $message;
     }
-    function deleteMessage(Request $request) {
+
+
+    function deleteMessage(Request $request)
+    {
         $message = Message::find($request['id']);
         #affiche l'utilisateur trouvé sur la page web
         $message->delete();
+        $mess_conv = Conversation::where('id_message', $request['id'])->first();
+        $mess_conv->delete();
+        return response()->json([
+            "message" => "Le message a été supprimé"
+        ], 200);
+    }
+    function viewMessage(Request $request)
+    {
+        $message = Message::find($request['id']);
+        #affiche l'utilisateur trouvé sur la page web
+        $message->view = true;
+        $message->save();
         return $message;
     }
-   /* function getMessage(Request $request) {
+    /* function getMessage(Request $request) {
         $message = Message::find($request['id']);
         #affiche l'utilisateur trouvé sur la page web
         return $message;
     }*/
-    function getAllMessage(Request $request) {
-         #récupère les messages d'une conversation et les trie par date
-        $message = Message::where('userSend', $request['userSend'])->where('userReceive', $request['userReceive'])->orderBy('publishDate', 'asc')->get('content', 'publishDate', 'pathMediaMessage', 'reponseMessage', 'view');
-        #affiche l'utilisateur trouvé sur la page web
-        return $message;
+    function getAllMessageConversation(Request $request)
+    {
+        //récupère tous les messages de la conversation
+        $messages = Conversation::where('id_conversation', $request['id_conversation'])->get();
+        return $messages;
     }
     /**function updateMessage(Request $request) {
         $message = Message::find($request['id']);

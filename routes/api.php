@@ -29,5 +29,7 @@ Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
-Route::post('/getMessages', [MessageController::class, 'getAllMessage']);
+Route::post('/createConversation', [MessageController::class, 'createConversation']);
+Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
 Route::post('/deleteMessages', [MessageController::class, 'deleteMessage']);
+Route::post('/viewMessages', [MessageController::class, 'viewMessage']);

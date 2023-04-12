@@ -13,20 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('userconversations', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
-            $table->date('publishDate');
-            $table->text('pathMediaMessage')->nullable();
             $table->bigInteger('id_User');
             $table->bigInteger('id_conversation');
-
-            
             $table->timestamps();
             
-        });
+        });    
     }
 
+    
     /**
      * Reverse the migrations.
      *
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('userconversations');
     }
 };

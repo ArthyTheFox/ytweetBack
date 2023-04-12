@@ -13,17 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
-            $table->date('publishDate');
-            $table->text('pathMediaMessage')->nullable();
-            $table->bigInteger('id_User');
-            $table->bigInteger('id_conversation');
-
-            
             $table->timestamps();
-            
+            $table->string('titre');	
+            $table->bigInteger('id_conversation');
+            $table->boolean('isGroupe')->default(false);
         });
     }
 
@@ -34,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('conversations');
     }
 };
