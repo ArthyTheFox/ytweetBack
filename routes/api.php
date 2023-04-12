@@ -26,11 +26,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/post', [PostController::class, 'index']);
 Route::post('/post', [PostController::class, 'store']);
 Route::get('/post/{id}', [PostController::class, 'show']);
-Route::get('/post/user/{id}', [PostController::class, 'showByIdUser']);
+Route::get('/post/user/{username}', [PostController::class, 'showByUser']);
+Route::get('/post/user/{username}/like', [PostController::class, 'getByLiked']);
 //route comment
 Route::post('/comment', [CommentController::class, 'newComment']);
 Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
 //route user
+Route::get('/user/{username}', [UserController::class, 'getUser']);
+Route::put('/user/{id}', [UserController::class, 'update']);
 Route::post('/deleteUser', [UserController::class, 'deleteUser']);
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
