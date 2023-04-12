@@ -8,6 +8,7 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
+    //TODO : recupere nbre de like & 
     public function index()
     {
         $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname')
