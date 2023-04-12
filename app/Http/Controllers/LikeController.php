@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
+    //TODO : verifier deja like
     public function newLike(Request $request)
     {
        $like = new Like;
