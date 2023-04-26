@@ -16,8 +16,7 @@ class UserController extends Controller
         return $user;
     }
 
-    function createUser(Request $request)
-    {
+    function createUser(Request $request){
         $user = new User;
 
         $user->lastname = $request['lastname'];
@@ -56,6 +55,13 @@ class UserController extends Controller
         DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idUser = users.id) as nbrComments'))
         ->where('username', $username)->first();
         return $user;
+    }
+
+    function getUserMessage(Request $request) {
+        $user = User::find($request['id']);
+        return response()->json([
+            $user
+        ]);
     }
 
 

@@ -45,6 +45,7 @@ Route::post('/newLike', [LikeController::class, 'newLike']);
 Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 //route search
 Route::post('/search',[searchController::class, 'show']);
+Route::get('getUser/{id}', [UserController::class, 'getUserMessage']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
