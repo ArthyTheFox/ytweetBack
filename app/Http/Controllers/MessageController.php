@@ -177,6 +177,15 @@ class MessageController extends Controller
         }
     }
 
+    function getAllconversation(Request $request)
+    {
+        //récupère toutes les conversation d'un utilisateur
+        
+            $conv = userconversation::where('id_User', $request['id'])->get();
+            return $conv;
+        
+    }
+
     /**function updateMessage(Request $request) {
         $message = Message::find($request['id']);
         #affiche l'utilisateur trouvé sur la page web
