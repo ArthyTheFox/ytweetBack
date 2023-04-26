@@ -9,6 +9,7 @@ use App\Models\Conversation;
 use App\Models\User;
 use App\Models\userconversation;
 use Illuminate\Support\Str;
+use App\Http\Controllers\UserController;
 
 
 class MessageController extends Controller
@@ -170,8 +171,14 @@ class MessageController extends Controller
                 "message" => "La conversation n'existe pas"
             ], 200);
         } else {
-            $messages = Message::where('id_conversation', $request['id'])->get();
-            return $messages;
+            $messages = Message::where('id_conversation', $request['id'])->orderBy('created_at');
+            $table= $messages->get()->pluck('user')->toArray();
+            
+            return response()->json([
+                "message"=> $messages->get(),
+                "user"=> collect($table)->unique('id')->values()->all()
+                ,
+            ], 200);
         }
     }
 
