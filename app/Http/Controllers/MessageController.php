@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 class MessageController extends Controller
 {
     function createMessage(Request $request)
-    {   
+    {
         //vérifie si la conversation existe
         $convexist = Conversation::where('id_conversation', $request['id_conversation'])->first();
         if ($convexist == null) {
@@ -22,93 +22,92 @@ class MessageController extends Controller
                 "message" => "La conversation n'existe pas"
             ], 200);
         } else {
-            
-        $message = new Message;
-        $message->id_user = $request['id_user'];
-        $message->content = $request['content'];
-        $message->id_conversation = $request['id_conversation'];
 
-        if ($request['pathMediaMessage'] == null) {
-            $message->pathMediaMessage = null;
-        } else {
-            $message->pathMediaMessage = $request['pathMediaMessage'];
+            $message = new Message;
+            $message->id_user = $request['id_user'];
+            $message->content = $request['content'];
+            $message->id_conversation = $request['id_conversation'];
+
+            if ($request['pathMediaMessage'] == null) {
+                $message->pathMediaMessage = null;
+            } else {
+                $message->pathMediaMessage = $request['pathMediaMessage'];
+            }
+
+            $message->publishDate = now();
+
+            if ($request['pathMediaMessage'] == null) {
+                $message->pathMediaMessage = null;
+            } else {
+                $message->pathMediaMessage = $request['pathMediaMessage'];
+            }
+            $message->save();
         }
-
-        $message->publishDate = now();
-
-        if ($request['pathMediaMessage'] == null) {
-            $message->pathMediaMessage = null;
-        } else {
-            $message->pathMediaMessage = $request['pathMediaMessage'];
-        }
-        $message->save();
-    }
         return response()->json([
             "message" => "Le message a été créé",
-            "id_conversation"=> $request['id_conversation'],
+            "id_conversation" => $request['id_conversation'],
             "id_message" => $message->id,
             "id_user" => $message->id_user,
 
         ], 200);
     }
 
-    function addUserAtConversation(Request $request){
-        if(Conversation::where('id_conversation', $request['id_conversation'])->first() == null){
+    function addUserAtConversation(Request $request)
+    {
+        if (Conversation::where('id_conversation', $request['id_conversation'])->first() == null) {
             return response()->json([
                 "message" => "La conversation n'existe pas"
             ], 200);
-        }
-        else if (userconversation::where('id_User', $request['user'])->where('id_conversation', $request['id_conversation'])->first() != null) {
+        } else if (userconversation::where('id_User', $request['user'])->where('id_conversation', $request['id_conversation'])->first() != null) {
             return response()->json([
                 "message" => "L'utilisateur est déjà dans la conversation"
             ], 200);
+        } else {
+            $newUserConv = new userconversation();
+            $newUserConv->id_User = $request['newUser'];
+            $newUserConv->id_conversation = $request['id_conversation'];
+            $newUserConv->save();
+            return response()->json([
+                "message" => "L'utilisateur a été ajouté à la conversation"
+            ], 200);
         }
-        else{
-        $newUserConv = new userconversation();
-        $newUserConv->id_User = $request['newUser'];
-        $newUserConv->id_conversation = $request['id_conversation'];
-        $newUserConv->save();
-        return response()->json([
-            "message" => "L'utilisateur a été ajouté à la conversation"
-        ], 200);
-        }
-
     }
 
 
-    function createConversation(Request $request){//pour cette route il faut en paramètre userSend, userReciev, titre
+    function createConversation(Request $request)
+    { //pour cette route il faut en paramètre userSend, userReciev, titre
         $convSend =  userconversation::where('id_User', $request['userSend'])->pluck('id_conversation')->toArray();
         $convReciev = userconversation::where('id_User', $request['userReceive'])->pluck('id_conversation')->toArray();
-       // $titre= Conversation::where('titre', $request['titre'])->first();
+        // $titre= Conversation::where('titre', $request['titre'])->first();
         //vérifie s'ils ont un élément en commun
         $convexist = array_intersect($convSend, $convReciev);
 
         // si convexist a une taille supérieur à 0 alors on fait
-        if (sizeof($convexist) == 0 /*or $titre !=$request['titre'] or $titre == null*/){
+        if (sizeof($convexist) == 0 /*or $titre !=$request['titre'] or $titre == null*/) {
             $newConv = new Conversation();
             if ($request['titre'] == null) {
-                $user1=User::where('id', $request['userSend'])->get("username")->first();
-                $user2=User::where('id', $request['userReceive'])->get("username")->first();
+                $user1 = User::where('id', $request['userSend'])->get("username")->first();
+                $user2 = User::where('id', $request['userReceive'])->get("username")->first();
                 $newConv->titre = "Conversation de " . $user1->username . " et " . $user2->username;
             } else {
                 $newConv->titre = $request['titre'];
             }
             //id de la conversation est égale à l'id de la dernière conversation +1
-           /* $max = Conversation::orderBy('id_conversation', 'ASC')->first();
+            /* $max = Conversation::orderBy('id_conversation', 'ASC')->first();
             if ($max == null) {
                 $newConv->id_conversation = 1;
             } else {
                 $newConv->id_conversation = $max + 1;
             }
             print_r($max + 1);*/
-            $id_conv=random_int(1, 1000000000);
+            $id_conv = random_int(1, 1000000000);
             if (Conversation::where('id_conversation', $id_conv)->first() != null) {
-                $id_conv=random_int(1, 1000000000);
+                $id_conv = random_int(1, 1000000000);
             }
 
-            $newConv->id_conversation=$id_conv;
+            $newConv->id_conversation = $id_conv;
             $newConv->save();
-            
+
             $newUserConv = new userconversation();
             $newUserConv->id_User = $request['userSend'];
             $newUserConv->id_conversation = $id_conv;
@@ -125,13 +124,12 @@ class MessageController extends Controller
         } else {
             //$id_conv = $convexist mais que le premier élément
             $id_conv = array_values($convexist);
-                return response()->json([
+            return response()->json([
                 "message" => "La conversation existe déjà",
                 "id_conversation" => $id_conv[0],
                 "convExist" => true
             ], 200);
         }
-        
     }
 
 
