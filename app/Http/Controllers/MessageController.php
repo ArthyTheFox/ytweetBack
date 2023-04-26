@@ -123,8 +123,9 @@ class MessageController extends Controller
                 "convExist" => false
             ], 200);
         } else {
-            $id_conv = $convexist;
-            return response()->json([
+            //$id_conv = $convexist mais que le premier élément
+            $id_conv = array_values($convexist);
+                return response()->json([
                 "message" => "La conversation existe déjà",
                 "id_conversation" => $id_conv[0],
                 "convExist" => true
