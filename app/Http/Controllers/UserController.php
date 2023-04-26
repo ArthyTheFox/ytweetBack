@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -45,6 +46,19 @@ class UserController extends Controller
 
         $user->save();
 
+        return $user;
+    }
+
+    function getUser($username) {
+        $user = User::select('users.*', DB::raw('(SELECT COUNT(*) FROM posts WHERE posts.userId = users.id) as nbrPosts'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idUser = users.id) as nbrComments'))->where('username', $username)->first();
+        return $user;
+    }
+
+    function update(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->description = $request['description'];
+        $user->update();
         return $user;
     }
 }
