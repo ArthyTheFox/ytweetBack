@@ -6,12 +6,10 @@ use App\Models\Like;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
-{
-    //TODO : verifier deja like
+{ 
     public function newLike(Request $request)
     {
         $verifLike = Like::where('idUser', $request['idUser'])->where('idPost', $request['idPost'])->first();
-
         if (!$verifLike) {
             $like = new Like;
             $like->idUser = $request['idUser'];

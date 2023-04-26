@@ -8,11 +8,13 @@ use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
-{
-    //TODO : recupere nbre de like & 
+{  
     public function index()
     {
-        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser = 1) as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 
+        DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), 
+        DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser = 1) as isLike'), 
+        DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
             ->join('users', 'users.id', '=', 'posts.userId')
             ->where('isArchived', false)
             ->orderBy('posts.id', 'desc')
@@ -23,6 +25,11 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required',
+            'publish_at' => 'nullable|date',
+        ]);
         $post = new Post;
 
         if ($request['pathMedia']) 
@@ -41,7 +48,9 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser = 1) as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', 
+        DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser = 1) as isLike'), 
+        DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
         ->join('users', 'users.id', '=', 'posts.userId')
         ->leftJoinSub(
             Like::selectRaw('idPost, COUNT(*) as nbreLike')
