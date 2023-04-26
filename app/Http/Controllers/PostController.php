@@ -27,9 +27,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required',
-            'publish_at' => 'nullable|date',
+            'content' => 'required',
         ]);
         $post = new Post;
 
@@ -40,7 +38,7 @@ class PostController extends Controller
         }
         $post->content = $request['content'];
         $post->publishDate = date("Y-m-d H:i:s");
-        $post->published = $request['published'];
+        // $post->published = $request['published'];    
         $post->userId = $request['userId'];
         $post->save();
         return $post;
