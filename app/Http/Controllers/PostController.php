@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    //TODO : recupere nbre de like & 
     public function index(Request $request)
     {
-        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 
+        DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), 
+        DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), 
+        DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
             ->join('users', 'users.id', '=', 'posts.userId')
             ->where('isArchived', false)
             ->orderBy('posts.id', 'desc')
@@ -24,6 +26,9 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'content' => 'required',
+        ]);
         $post = new Post;
 
         if ($request['pathMedia']) {
@@ -33,7 +38,7 @@ class PostController extends Controller
         }
         $post->content = $request['content'];
         $post->publishDate = date("Y-m-d H:i:s");
-        $post->published = $request['published'];
+        // $post->published = $request['published'];    
         $post->userId = $request['userId'];
         $post->save();
         return $post;
@@ -41,7 +46,9 @@ class PostController extends Controller
 
     public function show(Request $request,$id)
     {
-        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', 
+        DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'),
+        DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
             ->join('users', 'users.id', '=', 'posts.userId')
             ->leftJoinSub(
                 Like::selectRaw('idPost, COUNT(*) as nbreLike')
