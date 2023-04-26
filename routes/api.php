@@ -33,3 +33,4 @@ Route::post('/createConversation', [MessageController::class, 'createConversatio
 Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
 Route::post('/deleteMessages', [MessageController::class, 'deleteMessage']);
 Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
+Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
