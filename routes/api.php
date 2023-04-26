@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,10 +35,17 @@ Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
 //route user
 Route::get('/user/{username}', [UserController::class, 'getUser']);
 Route::put('/user/{id}', [UserController::class, 'update']);
-Route::post('/deleteUser', [UserController::class, 'deleteUser']);
+Route::delete('/deleteUser', [UserController::class, 'deleteUser']);
+
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 //route like
 Route::post('/newLike', [LikeController::class, 'newLike']); 
 Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 
+Route::post('/sendMessages', [MessageController::class, 'createMessage']);
+Route::post('/createConversation', [MessageController::class, 'createConversation']);
+Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
+Route::delete('/deleteMessages', [MessageController::class, 'deleteMessage']);
+//Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
+Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
