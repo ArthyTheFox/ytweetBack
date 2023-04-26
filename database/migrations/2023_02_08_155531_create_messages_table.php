@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('content');
-            $table->date('publishDate');
+            $table->dateTime('publishDate');
             $table->text('pathMediaMessage')->nullable();
             $table->bigInteger('id_User');
             $table->bigInteger('id_conversation');
