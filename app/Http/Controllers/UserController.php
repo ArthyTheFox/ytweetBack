@@ -13,6 +13,13 @@ class UserController extends Controller
         $user->delete();
         return $user;
     }
+
+    function getUser(Request $request) {
+        $user = User::find($request['id']);
+        return response()->json([
+            $user
+        ]);
+    }
     function createUser(Request $request){
         $user = new User;
 

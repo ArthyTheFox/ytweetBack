@@ -27,6 +27,7 @@ Route::post('/posts', [PostController::class, 'store']);
 Route::delete('/deleteUser', [UserController::class, 'deleteUser']);
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
+Route::get('getUser/{id}', [UserController::class, 'getUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
