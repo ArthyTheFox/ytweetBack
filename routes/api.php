@@ -49,3 +49,5 @@ Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConvers
 Route::delete('/deleteMessages', [MessageController::class, 'deleteMessage']);
 //Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
 Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
+
+Route::post('/searchUser', [UserController::class, 'searchUser']);
