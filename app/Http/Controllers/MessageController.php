@@ -71,7 +71,7 @@ class MessageController extends Controller
         return response()->json([
             "message" => "L'utilisateur a été ajouté à la conversation"
         ], 200);
-    }
+        }
 
     }
 
@@ -127,23 +127,27 @@ class MessageController extends Controller
 
     function deleteMessage(Request $request)
     {
-        $message = Message::find($request['id']);
+        if ($request["id_conversation"] == null) {
+            return response()->json([
+                "message" => "La conversation n'existe pas"
+            ], 200);
+        }
+        $message = Message::find($request['id_message']);
         #affiche l'utilisateur trouvé sur la page web
         $message->delete();
-        $mess_conv = Conversation::where('id_message', $request['id'])->first();
-        $mess_conv->delete();
         return response()->json([
             "message" => "Le message a été supprimé"
         ], 200);
     }
-    function viewMessage(Request $request)
+
+    /*function viewMessage(Request $request)
     {
         $message = Message::find($request['id']);
         #affiche l'utilisateur trouvé sur la page web
         $message->view = true;
         $message->save();
         return $message;
-    }
+    }*/
     /* function getMessage(Request $request) {
         $message = Message::find($request['id']);
         #affiche l'utilisateur trouvé sur la page web

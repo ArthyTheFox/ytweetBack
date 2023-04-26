@@ -24,13 +24,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::post('/posts', [PostController::class, 'store']);
-Route::post('/deleteUser', [UserController::class, 'deleteUser']);
+Route::delete('/deleteUser', [UserController::class, 'deleteUser']);
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
 Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
-Route::post('/deleteMessages', [MessageController::class, 'deleteMessage']);
-Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
+Route::delete('/deleteMessages', [MessageController::class, 'deleteMessage']);
+//Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
 Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);

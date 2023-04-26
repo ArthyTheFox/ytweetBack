@@ -8,7 +8,7 @@ use App\Models\User;
 class UserController extends Controller
 {
     function deleteUser(Request $request) {
-        $user = User::find($request['id']);
+        $user = User::find($request['id_user']);
         #affiche l'utilisateur trouvé sur la page web
         $user->delete();
         return $user;
