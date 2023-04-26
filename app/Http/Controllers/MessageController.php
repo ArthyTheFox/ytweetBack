@@ -1,0 +1,185 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Message;
+use Psy\Readline\Hoa\Console;
+use App\Models\Conversation;
+use App\Models\User;
+use App\Models\userconversation;
+use Illuminate\Support\Str;
+
+
+class MessageController extends Controller
+{
+    function createMessage(Request $request)
+    {   
+        //vérifie si la conversation existe
+        $convexist = Conversation::where('id_conversation', $request['id_conversation'])->first();
+        if ($convexist == null) {
+            return response()->json([
+                "message" => "La conversation n'existe pas"
+            ], 200);
+        } else {
+            
+        $message = new Message;
+        $message->id_user = $request['id_user'];
+        $message->content = $request['content'];
+        $message->id_conversation = $request['id_conversation'];
+
+        if ($request['pathMediaMessage'] == null) {
+            $message->pathMediaMessage = null;
+        } else {
+            $message->pathMediaMessage = $request['pathMediaMessage'];
+        }
+
+        $message->publishDate = now();
+
+        if ($request['pathMediaMessage'] == null) {
+            $message->pathMediaMessage = null;
+        } else {
+            $message->pathMediaMessage = $request['pathMediaMessage'];
+        }
+        $message->save();
+    }
+        return response()->json([
+            "message" => "Le message a été créé",
+            "id_conversation"=> $request['id_conversation'],
+            "id_message" => $message->id,
+            "id_user" => $message->id_user,
+
+        ], 200);
+    }
+
+    function addUserAtConversation(Request $request){
+        if(Conversation::where('id_conversation', $request['id_conversation'])->first() == null){
+            return response()->json([
+                "message" => "La conversation n'existe pas"
+            ], 200);
+        }
+        else if (userconversation::where('id_User', $request['user'])->where('id_conversation', $request['id_conversation'])->first() != null) {
+            return response()->json([
+                "message" => "L'utilisateur est déjà dans la conversation"
+            ], 200);
+        }
+        else{
+        $newUserConv = new userconversation();
+        $newUserConv->id_User = $request['newUser'];
+        $newUserConv->id_conversation = $request['id_conversation'];
+        $newUserConv->save();
+        return response()->json([
+            "message" => "L'utilisateur a été ajouté à la conversation"
+        ], 200);
+        }
+
+    }
+
+
+    function createConversation(Request $request){//pour cette route il faut en paramètre userSend, userReciev, titre
+        $convSend =  userconversation::where('id_User', $request['userSend'])->pluck('id_conversation')->toArray();
+        $convReciev = userconversation::where('id_User', $request['userReceive'])->pluck('id_conversation')->toArray();
+        //vérifie s'ils ont un élément en commun
+        $convexist = array_intersect($convSend, $convReciev);
+
+        // si convexist a une taille supérieur à 0 alors on fait
+        if (sizeof($convexist) == 0){
+            $newConv = new Conversation();
+            $newConv->titre = "Conversation de " . $request['titre'];
+            //id de la conversation est égale à l'id de la dernière conversation +1
+           /* $max = Conversation::orderBy('id_conversation', 'ASC')->first();
+            if ($max == null) {
+                $newConv->id_conversation = 1;
+            } else {
+                $newConv->id_conversation = $max + 1;
+            }
+            print_r($max + 1);*/
+            $id_conv=random_int(1, 1000000000);
+            if (Conversation::where('id_conversation', $id_conv)->first() != null) {
+                $id_conv=random_int(1, 1000000000);
+            }
+
+            $newConv->id_conversation=$id_conv;
+            $newConv->save();
+            
+            $newUserConv = new userconversation();
+            $newUserConv->id_User = $request['userSend'];
+            $newUserConv->id_conversation = $id_conv;
+            $newUserConv->save();
+            $newUserConv = new userconversation();
+            $newUserConv->id_User = $request['userReceive'];
+            $newUserConv->id_conversation = $id_conv;
+            $newUserConv->save();
+            return response()->json([
+                "message" => "La conversation a été créée",
+                "id_conversation" => $id_conv
+            ], 200);
+        } else {
+            $id_conv = $convexist;
+            return response()->json([
+                "message" => "La conversation existe déjà",
+                "id_conversation" => $id_conv[0]
+            ], 200);
+        }
+        
+    }
+
+
+    function deleteMessage(Request $request)
+    {
+        if ($request["id_conversation"] == null) {
+            return response()->json([
+                "message" => "La conversation n'existe pas"
+            ], 200);
+        }
+        $message = Message::find($request['id_message']);
+        #affiche l'utilisateur trouvé sur la page web
+        $message->delete();
+        return response()->json([
+            "message" => "Le message a été supprimé"
+        ], 200);
+    }
+
+    /*function viewMessage(Request $request)
+    {
+        $message = Message::find($request['id']);
+        #affiche l'utilisateur trouvé sur la page web
+        $message->view = true;
+        $message->save();
+        return $message;
+    }*/
+    /* function getMessage(Request $request) {
+        $message = Message::find($request['id']);
+        #affiche l'utilisateur trouvé sur la page web
+        return $message;
+    }*/
+    function getAllMessageConversation(Request $request)
+    {
+        //récupère tous les messages de la conversation
+        $conversation = Conversation::where('id_conversation', $request['id'])->get();
+        if ($conversation == null) {
+            return response()->json([
+                "message" => "La conversation n'existe pas"
+            ], 200);
+        } else {
+            $messages = Message::where('id_conversation', $request['id'])->get();
+            return $messages;
+        }
+    }
+
+    /**function updateMessage(Request $request) {
+        $message = Message::find($request['id']);
+        #affiche l'utilisateur trouvé sur la page web
+        $message->userSend = $request['userSend'];
+        $message->userReceive = $request['userReceive'];
+        $message->content = $request['content'];
+        $message->publishDate = $request['publishDate'];
+        $message->pathMediaMessage = $request['pathMediaMessage'];
+        $message->reponseMessage = $request['reponseMessage'];
+        $message->idMessage = $request['idMessage'];
+
+        $message->save();
+
+        return $message;
+    }*/
+}
