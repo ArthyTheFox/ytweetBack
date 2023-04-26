@@ -79,13 +79,20 @@ class MessageController extends Controller
     function createConversation(Request $request){//pour cette route il faut en paramètre userSend, userReciev, titre
         $convSend =  userconversation::where('id_User', $request['userSend'])->pluck('id_conversation')->toArray();
         $convReciev = userconversation::where('id_User', $request['userReceive'])->pluck('id_conversation')->toArray();
+       // $titre= Conversation::where('titre', $request['titre'])->first();
         //vérifie s'ils ont un élément en commun
         $convexist = array_intersect($convSend, $convReciev);
 
         // si convexist a une taille supérieur à 0 alors on fait
-        if (sizeof($convexist) == 0){
+        if (sizeof($convexist) == 0 /*or $titre !=$request['titre'] or $titre == null*/){
             $newConv = new Conversation();
-            $newConv->titre = "Conversation de " . $request['titre'];
+            if ($request['titre'] == null) {
+                $user1=User::where('id', $request['userSend'])->get("username")->first();
+                $user2=User::where('id', $request['userReceive'])->get("username")->first();
+                $newConv->titre = "Conversation de " . $user1->username . " et " . $user2->username;
+            } else {
+                $newConv->titre = $request['titre'];
+            }
             //id de la conversation est égale à l'id de la dernière conversation +1
            /* $max = Conversation::orderBy('id_conversation', 'ASC')->first();
             if ($max == null) {
@@ -112,13 +119,15 @@ class MessageController extends Controller
             $newUserConv->save();
             return response()->json([
                 "message" => "La conversation a été créée",
-                "id_conversation" => $id_conv
+                "id_conversation" => $id_conv,
+                "convExist" => false
             ], 200);
         } else {
             $id_conv = $convexist;
             return response()->json([
                 "message" => "La conversation existe déjà",
-                "id_conversation" => $id_conv[0]
+                "id_conversation" => $id_conv[0],
+                "convExist" => true
             ], 200);
         }
         
