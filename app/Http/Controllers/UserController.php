@@ -55,22 +55,15 @@ class UserController extends Controller
         return $user;
     }
 
-    function update(Request $request, $id)
-    {
-        $user = User::find($id);
-        $user->description = $request['description'];
-        $user->update();
-        return $user;
-    }
 
     function searchUser(Request $request)
     {
         $user = User::where('username', 'like', '%' . $request['username'] . '%')->get();
-        if ($user == null) {
+        if ($user == null || sizeof($user) == 0) {
             $user = User::where('firstname', 'like', '%' . $request['username'] . '%')->get();
-            if ($user == null) {
+            if ($user == null || sizeof($user) == 0) {
                 $user = User::where('lastname', 'like', '%' . $request['username'] . '%')->get();
-                if ($user == null) {
+                if ($user == null || sizeof($user) == 0) {
                     return response()->json([
                         'status' => false,
                         'message' => 'User not found.',
@@ -84,5 +77,15 @@ class UserController extends Controller
         } else {
             return $user;
         }
+
+        return $user;
+    }
+
+    function update(Request $request, $id)
+    {
+        $user = User::find($id);
+        $user->description = $request['description'];
+        $user->update();
+        return $user;
     }
 }
