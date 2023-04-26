@@ -48,11 +48,11 @@ class UserController extends Controller
     }
     function searchUser(Request $request){
         $user = User::where('username', 'like', '%'.$request['username'].'%')->get();
-        if ($user == null) {
+        if ($user == null || sizeof($user) == 0) {
                 $user=User::where('firstname', 'like', '%'.$request['username'].'%')->get();
-                if ($user == null) {
+                if ($user == null || sizeof($user) == 0) {
                     $user=User::where('lastname', 'like', '%'.$request['username'].'%')->get();
-                    if ($user == null) {
+                    if ($user == null || sizeof($user) == 0) {
                         return response()->json([
                             'status' => false,
                             'message' => 'User not found.',
