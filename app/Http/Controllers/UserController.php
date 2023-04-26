@@ -28,12 +28,12 @@ class UserController extends Controller
                 'message' => 'Password need to not be null.',
             ], 500);
         } 
-        elseif (strlen($request['password']) < 8) {
+        else if (strlen($request['password']) < 8) {
             return response()->json([
                 'status' => false,
                 'message' => 'Password need 8 caractere minimum.',
-            ], 500);        }
-
+            ], 500);        
+        }
         else {
             $user->password = bcrypt($request['password']);
         }
@@ -45,12 +45,14 @@ class UserController extends Controller
 
 
         $user->save();
-
         return $user;
     }
 
     function getUser($username) {
-        $user = User::select('users.*', DB::raw('(SELECT COUNT(*) FROM posts WHERE posts.userId = users.id) as nbrPosts'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idUser = users.id) as nbrComments'))->where('username', $username)->first();
+        $user = User::select('users.*', 
+        DB::raw('(SELECT COUNT(*) FROM posts WHERE posts.userId = users.id) as nbrPosts'), 
+        DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idUser = users.id) as nbrComments'))
+        ->where('username', $username)->first();
         return $user;
     }
 

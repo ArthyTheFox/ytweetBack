@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\searchController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -40,4 +41,6 @@ Route::post('/login', [LoginController::class, 'loginUser']);
 //route like
 Route::post('/newLike', [LikeController::class, 'newLike']); 
 Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
+//route search
+Route::post('/search',[searchController::class, 'show']);
 
