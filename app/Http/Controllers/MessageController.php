@@ -162,7 +162,7 @@ class MessageController extends Controller
         #affiche l'utilisateur trouvé sur la page web
         return $message;
     }*/
-    function getAllMessageConversation(Request $request)
+    function getAllMessageConversation(Request $request) # pour cette metode il faut dans la requête id
     {
         //récupère tous les messages de la conversation
         $conversation = Conversation::where('id_conversation', $request['id'])->get();
@@ -186,7 +186,9 @@ class MessageController extends Controller
     {
         //récupère toutes les conversation d'un utilisateur
         
-            $conv = userconversation::where('id_User', $request['id'])->get();
+            $userconv = userconversation::where('id_User', $request['id'])->get();
+            $conv = Conversation::whereIn('id_conversation', $userconv->pluck('id_conversation'))->get();
+            
             return $conv;
         
     }
