@@ -134,7 +134,7 @@ class MessageController extends Controller
     }
 
 
-    function deleteMessage(Request $request, $idconversation, $idmessage)
+    function deleteMessage($idconversation, $idmessage)
     {
         if ($idconversation === null) {
             return response()->json([
