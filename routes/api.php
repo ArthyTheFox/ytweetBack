@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FacultiesController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LikeController;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ Route::post('/post', [PostController::class, 'store']);
 Route::get('/post/{id}', [PostController::class, 'show']);
 Route::get('/post/user/{username}', [PostController::class, 'showByUser']);
 Route::get('/post/user/{username}/like', [PostController::class, 'getByLiked']);
+Route::get('/post/faculty/{id}', [PostController::class, 'getPostByFaculty']);
 //route comment
 Route::post('/comment', [CommentController::class, 'newComment']);
 Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
@@ -38,7 +40,6 @@ Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
 Route::get('/user/{username}', [UserController::class, 'getUser']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::delete('/deleteUser', [UserController::class, 'deleteUser']);
-
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 //route like
@@ -53,12 +54,14 @@ Route::post('/follow', [FollowController::class, 'follow']);
 Route::delete('/follow', [FollowController::class, 'unFollow']);
 Route::get('/followByUser', [FollowController::class, 'getFollowByUser']);
 
+Route::get('/faculties', [FacultiesController::class, 'faculties']);
+
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
 Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
 Route::delete('/deleteMessages/{idconversation}/{idmessage}', [MessageController::class, 'deleteMessage']);
 //Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
 Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
-
-Route::post('/searchUser', [UserController::class, 'searchUser']);
 Route::get('/getAllconversation/{id}', [MessageController::class, 'getAllconversation']);
+//search
+Route::post('/searchUser', [UserController::class, 'searchUser']);
