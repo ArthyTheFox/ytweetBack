@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LikeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,11 @@ Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 //route search
 Route::post('/search',[searchController::class, 'show']);
 Route::get('getUser/{id}', [UserController::class, 'getUserMessage']);
+
+Route::get('/follow', [FollowController::class, 'getFollow']);
+Route::post('/follow', [FollowController::class, 'follow']);
+Route::delete('/follow', [FollowController::class, 'unFollow']);
+Route::get('/followByUser', [FollowController::class, 'getFollowByUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
