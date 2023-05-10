@@ -134,14 +134,14 @@ class MessageController extends Controller
     }
 
 
-    function deleteMessage(Request $request)
+    function deleteMessage(Request $request, $idconversation, $idmessage)
     {
-        if ($request["id_conversation"] == null) {
+        if ($idconversation === null) {
             return response()->json([
                 "message" => "La conversation n'existe pas"
             ], 200);
         }
-        $message = Message::find($request['id_message']);
+        $message = Message::find($idmessage);
         #affiche l'utilisateur trouvé sur la page web
         $message->delete();
         return response()->json([

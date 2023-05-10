@@ -55,8 +55,8 @@ Route::get('/followByUser', [FollowController::class, 'getFollowByUser']);
 
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
-Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
-Route::delete('/deleteMessages', [MessageController::class, 'deleteMessage']);
+Route::get('/getMessages/{idconversation}/{idmessage}', [MessageController::class, 'getAllMessageConversation']);
+Route::delete('/deleteMessages/{id}', [MessageController::class, 'deleteMessage']);
 //Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
 Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
 
