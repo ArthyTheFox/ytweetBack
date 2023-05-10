@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 
+        $posts = Post::select('posts.*', 'users.id as idUser','users.username', 'users.lastname', 'users.firstname', 
         DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), 
         DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), 
         DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
@@ -46,7 +46,7 @@ class PostController extends Controller
 
     public function show(Request $request,$id)
     {
-        $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', 
+        $post = Post::select('posts.*', 'users.id as idUser', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', 
         DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'),
         DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
             ->join('users', 'users.id', '=', 'posts.userId')
@@ -69,7 +69,7 @@ class PostController extends Controller
         $user = User::where('username', $username)->first();
 
         if ($user) {
-            $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+            $posts = Post::select('posts.*', 'users.id as idUser', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
                 ->join('users', 'users.id', '=', 'posts.userId')
                 ->where('isArchived', false)
                 ->where('userId', $user->id)
@@ -86,7 +86,7 @@ class PostController extends Controller
         $user = User::where('username', $username)->first();
 
         if ($user) {
-            $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
+            $posts = Post::select('posts.*', 'users.id as idUser', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
                 ->join('users', 'users.id', '=', 'posts.userId')
                 ->join('likes', 'likes.idPost','=','posts.id')
                 ->where('likes.idUser', $user->id)
