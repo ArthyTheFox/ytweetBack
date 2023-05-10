@@ -44,10 +44,11 @@ class PostController extends Controller
         return $post;
     }
 
-    public function show(Request $request,$id)
-    {
+    public function show(Request $request, $id)
+    { 
         $post = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', 'likes.nbreLike', 
         DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'),
+        DB::raw('(SELECT faculties.type FROM faculties WHERE faculties.id IN (1,2)) AS facultyType'), // TODO ligne rajoutée 
         DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
             ->join('users', 'users.id', '=', 'posts.userId')
             ->leftJoinSub(
@@ -58,9 +59,9 @@ class PostController extends Controller
                 '=',
                 'posts.id'
             )
-            ->where('isArchived', false)
+            ->where('isArchived', false) // Todo à changer
             ->where('posts.id', $id)
-            ->first();
+            ->first();  
         return $post;
     }
 
@@ -71,14 +72,13 @@ class PostController extends Controller
         if ($user) {
             $posts = Post::select('posts.*', 'users.username', 'users.lastname', 'users.firstname', DB::raw('(SELECT COUNT(*) FROM likes WHERE likes.idPost = posts.id) as nbreLike'), DB::raw('(SELECT likes.id FROM likes WHERE likes.idPost = posts.id AND likes.idUser ='.$request->query('idUserConnected').') as isLike'), DB::raw('(SELECT COUNT(*) FROM comments WHERE comments.idPost = posts.id) as nbreComment'))
                 ->join('users', 'users.id', '=', 'posts.userId')
-                ->where('isArchived', false)
+                ->where('isArchived', false) //Todo à changer
                 ->where('userId', $user->id)
                 ->orderBy('posts.id', 'desc')
-                ->get();
+                ->get(); 
             return $posts;
         }
-
-        return response()->json('Utilisateur non trouvée');
+        return response()->json('Utilisateur non trouvé');
     }
 
     public function getByLiked(Request $request, $username)
@@ -96,6 +96,6 @@ class PostController extends Controller
             return $posts;
         }
 
-        return response()->json('Utilisateur non trouvée');
+        return response()->json('Utilisateur non trouvé');
     }
 }

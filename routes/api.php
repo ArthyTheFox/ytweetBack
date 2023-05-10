@@ -37,7 +37,6 @@ Route::get('/comment/post/{id}', [CommentController::class, 'showByIdPost']);
 Route::get('/user/{username}', [UserController::class, 'getUser']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::delete('/deleteUser', [UserController::class, 'deleteUser']);
-
 Route::post('/createUser', [UserController::class, 'createUser']);
 Route::post('/login', [LoginController::class, 'loginUser']);
 //route like
@@ -46,13 +45,13 @@ Route::delete('/deleteLike/{id}', [LikeController::class, 'deleteLike']);
 //route search
 Route::post('/search',[searchController::class, 'show']);
 Route::get('getUser/{id}', [UserController::class, 'getUserMessage']);
-
+//route message
 Route::post('/sendMessages', [MessageController::class, 'createMessage']);
 Route::post('/createConversation', [MessageController::class, 'createConversation']);
 Route::get('/getMessages/{id}', [MessageController::class, 'getAllMessageConversation']);
 Route::delete('/deleteMessages', [MessageController::class, 'deleteMessage']);
 //Route::post('/viewMessages', [MessageController::class, 'viewMessage']);
 Route::post('/addUserAtConversation', [MessageController::class, 'addUserAtConversation']);
-
-Route::post('/searchUser', [UserController::class, 'searchUser']);
 Route::get('/getAllconversation/{id}', [MessageController::class, 'getAllconversation']);
+//search
+Route::post('/searchUser', [UserController::class, 'searchUser']);
