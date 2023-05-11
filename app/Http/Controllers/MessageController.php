@@ -43,9 +43,11 @@ class MessageController extends Controller
                 $message->pathMediaMessage = $request['pathMediaMessage'];
             }
             $message->save();
+
+            $message->user = User::select('users.id', 'users.lastname', 'users.email', 'users.firstname', 'users.username')->where('users.id', $message->id_user)->first();
         }
         return response()->json([
-            "message" => "Le message a été créé",
+            "message" => $message,
             "id_conversation" => $request['id_conversation'],
             "id_message" => $message->id,
             "id_user" => $message->id_user,
